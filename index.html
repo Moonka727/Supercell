@@ -12,8 +12,8 @@
     --color-bg-alt: #2a2543;
     --color-text-base: #cbd5e1;
     --color-text-heading: #ede9fe;
-    --color-primary: #7c3aed;
-    --color-primary-hover: #a78bfa;
+    --color-primary: #7c3aed; /* violet-600 */
+    --color-primary-hover: #a78bfa; /* violet-400 */
     --color-shadow: rgba(124,58,237, 0.6);
     --border-radius: 0.75rem;
     --transition-fast: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -48,6 +48,7 @@
     padding-right: 1.5rem;
   }
 
+  /* Header */
   header {
     position: sticky;
     top: 0;
@@ -104,6 +105,7 @@
     width: 100%;
   }
 
+  /* Hero */
   .hero {
     padding-top: 5rem;
     padding-bottom: 7rem;
@@ -125,6 +127,7 @@
     line-height: 1.4;
   }
 
+  /* Get Started button */
   .btn-primary {
     background-color: var(--color-primary);
     color: white;
@@ -154,6 +157,7 @@
     outline: 2px solid #a78bfa;
     outline-offset: 2px;
   }
+  /* Button ripple */
   .btn-primary::after {
     content: '';
     position: absolute;
@@ -176,6 +180,7 @@
     transition: 0s;
   }
 
+  /* Features Section */
   .features {
     display: grid;
     grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
@@ -222,6 +227,7 @@
     font-size: 1rem;
   }
 
+  /* Footer */
   footer {
     padding: 3rem 1.5rem;
     text-align: center;
@@ -230,6 +236,7 @@
     user-select: none;
   }
 
+  /* Responsive typography */
   @media (max-width: 640px) {
     .hero h1 {
       font-size: 2.5rem;
@@ -239,6 +246,7 @@
     }
   }
 
+  /* MODAL STYLES */
   .modal-backdrop {
     background-color: var(--modal-backdrop);
     position: fixed;
@@ -324,7 +332,6 @@
     cursor: not-allowed;
   }
 </style>
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -392,6 +399,7 @@
 </footer>
 
 <!-- MODALS -->
+<!-- Email Modal -->
 <div id="emailModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="emailModalTitle" tabindex="-1" aria-hidden="true">
   <div class="modal" role="document">
     <h3 id="emailModalTitle">Write Your Email</h3>
@@ -401,4 +409,204 @@
       <div id="emailError" style="color:#f87171; min-height:1.25rem; margin-top: 0.25rem; font-size: 0.875rem;" aria-live="polite" aria-atomic="true"></div>
       <div class="modal-buttons">
         <button type="button" class="btn-secondary" id="emailCancelBtn">Cancel</button>
-       
+        <button type="submit" class="btn-primary" id="emailNextBtn" disabled>Next</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Code Modal -->
+<div id="codeModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="codeModalTitle" tabindex="-1" aria-hidden="true">
+  <div class="modal" role="document">
+    <h3 id="codeModalTitle">Type the Security Code</h3>
+    <form id="codeForm" novalidate>
+      <label for="codeInput">6-digit code</label>
+      <input type="text" id="codeInput" name="code" inputmode="numeric" maxlength="6" pattern="\\d{6}" autocomplete="off" aria-describedby="codeError" />
+      <div id="codeError" style="color:#f87171; min-height:1.25rem; margin-top: 0.25rem; font-size: 0.875rem;" aria-live="polite" aria-atomic="true"></div>
+      <div class="modal-buttons">
+        <button type="button" class="btn-secondary" id="codeCancelBtn">Cancel</button>
+        <button type="submit" class="btn-primary" id="codeFinishBtn" disabled>Finish</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const getStartedBtn = document.getElementById('getStartedBtn');
+    const emailModal = document.getElementById('emailModalBackdrop');
+    const emailForm = document.getElementById('emailForm');
+    const emailInput = document.getElementById('emailInput');
+    const emailError = document.getElementById('emailError');
+    const emailNextBtn = document.getElementById('emailNextBtn');
+    const emailCancelBtn = document.getElementById('emailCancelBtn');
+
+    const codeModal = document.getElementById('codeModalBackdrop');
+    const codeForm = document.getElementById('codeForm');
+    const codeInput = document.getElementById('codeInput');
+    const codeError = document.getElementById('codeError');
+    const codeFinishBtn = document.getElementById('codeFinishBtn');
+    const codeCancelBtn = document.getElementById('codeCancelBtn');
+
+    let savedEmail = '';
+    let savedCode = '';
+
+    // Utility to trap focus inside modal for accessibility
+    function trapFocus(element) {
+      const focusableElementsString = 'a[href], area[href], input:not([disabled]):not([type=hidden]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]';
+      const focusableElements = element.querySelectorAll(focusableElementsString);
+      if (focusableElements.length === 0) return;
+
+      const firstElem = focusableElements[0];
+      const lastElem = focusableElements[focusableElements.length - 1];
+
+      function keyListener(e) {
+        if (e.key === 'Tab') {
+          if (e.shiftKey) {
+            if (document.activeElement === firstElem) {
+              e.preventDefault();
+              lastElem.focus();
+            }
+          } else {
+            if (document.activeElement === lastElem) {
+              e.preventDefault();
+              firstElem.focus();
+            }
+          }
+        }
+        if (e.key === 'Escape') {
+          if (element === emailModal) {
+            closeEmailModal();
+          } else if(element === codeModal) {
+            closeCodeModal();
+          }
+        }
+      }
+      element.addEventListener('keydown', keyListener);
+      return () => element.removeEventListener('keydown', keyListener);
+    }
+
+    let releaseTrapFocusEmail;
+    let releaseTrapFocusCode;
+
+    function showEmailModal() {
+      emailModal.classList.add('active');
+      emailModal.setAttribute('aria-hidden', 'false');
+      getStartedBtn.setAttribute('aria-expanded', 'true');
+      emailInput.focus();
+      releaseTrapFocusEmail = trapFocus(emailModal);
+      emailNextBtn.disabled = true;
+      emailError.textContent = '';
+      emailInput.value = '';
+    }
+    function closeEmailModal() {
+      emailModal.classList.remove('active');
+      emailModal.setAttribute('aria-hidden', 'true');
+      getStartedBtn.setAttribute('aria-expanded', 'false');
+      releaseTrapFocusEmail && releaseTrapFocusEmail();
+      getStartedBtn.focus();
+    }
+
+    function showCodeModal() {
+      codeModal.classList.add('active');
+      codeModal.setAttribute('aria-hidden', 'false');
+      codeInput.focus();
+      releaseTrapFocusCode = trapFocus(codeModal);
+      codeFinishBtn.disabled = true;
+      codeError.textContent = '';
+      codeInput.value = '';
+    }
+    function closeCodeModal() {
+      codeModal.classList.remove('active');
+      codeModal.setAttribute('aria-hidden', 'true');
+      releaseTrapFocusCode && releaseTrapFocusCode();
+      getStartedBtn.focus();
+    }
+
+    // Validate email using simple regex
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email.toLowerCase());
+    }
+
+    // Validate 6-digit code
+    function validateCode(code) {
+      return /^\d{6}$/.test(code);
+    }
+
+    // Event listeners
+    getStartedBtn.addEventListener('click', () => {
+      showEmailModal();
+    });
+
+    emailInput.addEventListener('input', () => {
+      const value = emailInput.value.trim();
+      if (!value) {
+        emailNextBtn.disabled = true;
+        emailError.textContent = '';
+      } else if (!validateEmail(value)) {
+        emailNextBtn.disabled = true;
+        emailError.textContent = 'Please enter a valid email address.';
+      } else {
+        emailNextBtn.disabled = false;
+        emailError.textContent = '';
+      }
+    });
+
+    emailForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const emailVal = emailInput.value.trim();
+      if (!validateEmail(emailVal)) {
+        emailError.textContent = 'Please enter a valid email address.';
+        emailInput.focus();
+        return;
+      }
+      savedEmail = emailVal;
+      closeEmailModal();
+      showCodeModal();
+      // (In real app, should send code to email here)
+      console.log('Email saved:', savedEmail);
+    });
+
+    emailCancelBtn.addEventListener('click', () => {
+      closeEmailModal();
+    });
+
+    codeInput.addEventListener('input', () => {
+      const val = codeInput.value.trim();
+      if (validateCode(val)) {
+        codeFinishBtn.disabled = false;
+        codeError.textContent = '';
+      } else {
+        codeFinishBtn.disabled = true;
+        if(val.length > 0)
+          codeError.textContent = 'Code must be 6 digits.';
+        else
+          codeError.textContent = '';
+      }
+    });
+
+    codeForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const codeVal = codeInput.value.trim();
+      if (!validateCode(codeVal)) {
+        codeError.textContent = 'Code must be 6 digits.';
+        codeInput.focus();
+        return;
+      }
+      savedCode = codeVal;
+      console.log('Security code saved:', savedCode);
+      closeCodeModal();
+      alert('Thank you! Your email and security code have been saved.');
+    });
+
+    codeCancelBtn.addEventListener('click', () => {
+      closeCodeModal();
+    });
+
+  })();
+</script>
+
+</body>
+</html>
+
