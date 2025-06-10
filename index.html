@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Modern Dark Purple Website</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+
+  :root {
+    --color-bg: #1e1b2f;
+    --color-bg-alt: #2a2543;
+    --color-text-base: #cbd5e1;
+    --color-text-heading: #ede9fe;
+    --color-primary: #7c3aed;
+    --color-primary-hover: #a78bfa;
+    --color-shadow: rgba(124,58,237, 0.6);
+    --border-radius: 0.75rem;
+    --transition-fast: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --modal-backdrop: rgba(30,27,47,0.85);
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text-base);
+    line-height: 1.6;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    background: var(--color-bg-alt);
+    border-bottom: 1px solid rgba(124,58,237,0.4);
+    z-index: 100;
+    box-shadow: 0 1px 6px var(--color-shadow);
+  }
+
+  .nav-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    letter-spacing: 0.05em;
+    user-select: none;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  nav a {
+    font-weight: 600;
+    color: var(--color-text-base);
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color var(--transition-fast);
+  }
+  nav a::after {
+    content: '';
+    display: block;
+    height: 2px;
+    background: var(--color-primary);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    transition: width var(--transition-fast);
+    border-radius: 1px;
+  }
+  nav a:hover, nav a:focus {
+    color: var(--color-primary-hover);
+  }
+  nav a:hover::after, nav a:focus::after {
+    width: 100%;
+  }
+
+  .hero {
+    padding-top: 5rem;
+    padding-bottom: 7rem;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--color-text-heading);
+    margin: 0 0 1rem 0;
+    line-height: 1.1;
+  }
+  .hero p {
+    max-width: 480px;
+    margin: 0 auto 2.5rem auto;
+    font-weight: 500;
+    color: var(--color-text-base);
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+    font-weight: 700;
+    font-size: 1.125rem;
+    padding: 0.875rem 2.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 6px 10px rgba(124,58,237,0.4);
+    transition: 
+      background-color var(--transition-fast),
+      box-shadow var(--transition-fast),
+      transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary:hover,
+  .btn-primary:focus {
+    background-color: var(--color-primary-hover);
+    box-shadow: 0 10px 20px rgba(167,139,250,0.6);
+    transform: scale(1.05);
+    outline: none;
+  }
+  .btn-primary:focus-visible {
+    outline: 2px solid #a78bfa;
+    outline-offset: 2px;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(circle, white 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10,10);
+    transition: transform 0.7s, opacity 1s;
+  }
+  .btn-primary:active::after {
+    transform: scale(0,0);
+    opacity: 0.3;
+    transition: 0s;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+    gap: 2.5rem;
+    margin-top: 2rem;
+  }
+  .feature-card {
+    background-color: var(--color-bg-alt);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px rgba(124,58,237,0.15);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow var(--transition-fast), transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    cursor: default;
+    color: var(--color-text-base);
+  }
+  .feature-card:hover,
+  .feature-card:focus-within {
+    box-shadow: 0 8px 20px rgba(124,58,237,0.5);
+    transform: translateY(-6px);
+    color: var(--color-text-heading);
+  }
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    stroke: var(--color-primary);
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+  }
+  .feature-title {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+    transition: color var(--transition-fast);
+  }
+  .feature-card:hover .feature-title {
+    color: var(--color-primary-hover);
+  }
+  .feature-desc {
+    flex-grow: 1;
+    color: inherit;
+    font-size: 1rem;
+  }
+
+  footer {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--color-text-base);
+    font-size: 0.9rem;
+    user-select: none;
+  }
+
+  @media (max-width: 640px) {
+    .hero h1 {
+      font-size: 2.5rem;
+    }
+    .hero p {
+      font-size: 1.125rem;
+    }
+  }
+
+  .modal-backdrop {
+    background-color: var(--modal-backdrop);
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px) saturate(150%);
+  }
+  .modal-backdrop.active {
+    display: flex;
+  }
+  .modal {
+    background-color: var(--color-bg-alt);
+    border-radius: var(--border-radius);
+    padding: 2rem 2.5rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(124,58,237,0.7);
+    position: relative;
+    color: var(--color-text-base);
+  }
+  .modal h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--color-text-heading);
+  }
+  .modal label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--color-primary);
+  }
+  .modal input[type="email"],
+  .modal input[type="text"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border-radius: var(--border-radius);
+    border: 1.5px solid #444467;
+    background-color: var(--color-bg);
+    color: var(--color-text-heading);
+    outline-offset: 2px;
+    transition: border-color var(--transition-fast);
+  }
+  .modal input[type="email"]:focus,
+  .modal input[type="text"]:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 8px var(--color-primary);
+  }
+
+  .modal .modal-buttons {
+    margin-top: 1.75rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    font-weight: 600;
+    padding: 0.65rem 1.75rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transition-fast),
+                color var(--transition-fast);
+  }
+  .btn-secondary:hover,
+  .btn-secondary:focus {
+    background-color: var(--color-primary);
+    color: white;
+    outline: none;
+  }
+
+  .btn-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+</head>
+<body>
+
+<header>
+  <div class="container nav-wrapper" role="banner">
+    <div class="logo" aria-label="Logo">MyBrand</div>
+    <nav role="navigation" aria-label="Primary Navigation">
+      <a href="#features" tabindex="0">Features</a>
+      <a href="#pricing" tabindex="0">Pricing</a>
+      <a href="#contact" tabindex="0">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" role="region" aria-labelledby="hero-heading">
+    <div class="container">
+      <h1 id="hero-heading">Build your Component Library</h1>
+      <p>Create beautiful, reusable UI components with ease and speed.</p>
+      <button id="getStartedBtn" class="btn-primary" type="button" aria-haspopup="dialog" aria-controls="emailModal" aria-expanded="false">Get Started</button>
+    </div>
+  </section>
+
+  <section id="features" class="container" role="region" aria-labelledby="features-heading" tabindex="0">
+    <h2 id="features-heading" style="margin-bottom:1.5rem; font-weight:800; font-size:2rem; color:#ede9fe;">Features</h2>
+    <div class="features">
+      <article class="feature-card" tabindex="0" aria-label="Modular Components Feature">
+        <svg class="feature-icon" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor"></path>
+        </svg>
+        <h3 class="feature-title">Modular Components</h3>
+        <p class="feature-desc">Easily build and compose isolated UI components that fit perfectly into any project.</p>
+      </article>
+      <article class="feature-card" tabindex="0" aria-label="Fast Performance Feature">
+        <svg class="feature-icon" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M3 12l2-2 4 4 8-8 2 2" stroke="currentColor"></path>
+        </svg>
+        <h3 class="feature-title">Fast Performance</h3>
+        <p class="feature-desc">Optimized for speed and smooth interactions to delight users and developers alike.</p>
+      </article>
+      <article class="feature-card" tabindex="0" aria-label="Customizable Themes Feature">
+        <svg class="feature-icon" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="10" stroke="currentColor"></circle>
+          <path d="M12 6v6l4 2" stroke="currentColor"></path>
+        </svg>
+        <h3 class="feature-title">Customizable Themes</h3>
+        <p class="feature-desc">Tailor your UI with flexible theming options and CSS variables for brand consistency.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="pricing" class="container" role="region" aria-labelledby="pricing-heading" tabindex="0" style="padding-top:4rem; padding-bottom:4rem;">
+    <h2 id="pricing-heading" style="font-weight:800; font-size:2rem; color:#ede9fe; margin-bottom:1rem;">Pricing</h2>
+    <p style="max-width:600px; color: var(--color-text-base); font-size: 1.125rem;">Choose a plan that fits your needs. No surprises, transparent pricing with great value.</p>
+  </section>
+
+  <section id="contact" class="container" role="region" aria-labelledby="contact-heading" tabindex="0" style="padding-top:4rem; padding-bottom:4rem;">
+    <h2 id="contact-heading" style="font-weight:800; font-size:2rem; color:#ede9fe; margin-bottom:1rem;">Contact Us</h2>
+    <p style="max-width:600px; color: var(--color-text-base); font-size: 1.125rem;">Questions? Reach out to our support team anytime for help or feedback.</p>
+  </section>
+</main>
+
+<footer>
+  &copy; 2024 MyBrand. All rights reserved.
+</footer>
+
+<!-- MODALS -->
+<div id="emailModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="emailModalTitle" tabindex="-1" aria-hidden="true">
+  <div class="modal" role="document">
+    <h3 id="emailModalTitle">Write Your Email</h3>
+    <form id="emailForm" novalidate>
+      <label for="emailInput">Email address</label>
+      <input type="email" id="emailInput" name="email" required autocomplete="email" aria-describedby="emailError" />
+      <div id="emailError" style="color:#f87171; min-height:1.25rem; margin-top: 0.25rem; font-size: 0.875rem;" aria-live="polite" aria-atomic="true"></div>
+      <div class="modal-buttons">
+        <button type="button" class="btn-secondary" id="emailCancelBtn">Cancel</button>
+       
