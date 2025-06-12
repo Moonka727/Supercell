@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Modern Dark Purple Website</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
@@ -247,6 +248,15 @@
   }
 
   /* MODAL STYLES */
+   .modal {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-backdrop.active .modal {
+    opacity: 1;
+  }
+
   .modal-backdrop {
     background-color: var(--modal-backdrop);
     position: fixed;
@@ -432,7 +442,7 @@
 </div>
 
 <script>
-  (() => {
+(() => {
     const getStartedBtn = document.getElementById('getStartedBtn');
     const emailModal = document.getElementById('emailModalBackdrop');
     const emailForm = document.getElementById('emailForm');
@@ -477,7 +487,7 @@
         if (e.key === 'Escape') {
           if (element === emailModal) {
             closeEmailModal();
-          } else if(element === codeModal) {
+          } else if (element === codeModal) {
             closeCodeModal();
           }
         }
@@ -579,7 +589,7 @@
         codeError.textContent = '';
       } else {
         codeFinishBtn.disabled = true;
-        if(val.length > 0)
+        if (val.length > 0)
           codeError.textContent = 'Code must be 6 digits.';
         else
           codeError.textContent = '';
@@ -595,16 +605,26 @@
         return;
       }
       savedCode = codeVal;
+
+      // Show SweetAlert instead of alert
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops!',
+        text: 'Something went wrong, try again.',
+        showCloseButton: true,
+        confirmButtonText: 'Okay'
+      }).then(() => {
+        closeCodeModal();
+        closeEmailModal();
+      });
+
       console.log('Security code saved:', savedCode);
-      closeCodeModal();
-      alert('Thank you! Your email and security code have been saved.');
     });
 
     codeCancelBtn.addEventListener('click', () => {
       closeCodeModal();
     });
-
-  })();
+})();
 </script>
 
 </body>
